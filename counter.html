@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script>
+      function CurrentTime() {
+        var now = new Date();
+        var year = now.getFullYear(); //年
+        var month = now.getMonth() + 1; //月
+        var day = now.getDate(); //日
+        var hh = now.getHours(); //时
+        var mm = now.getMinutes(); //分
+        var ss = now.getSeconds();
+        var clock = year + "-";
+        if (month < 10) clock += "0";
+
+        clock += month + "-";
+
+        if (day < 10) clock += "0";
+
+        clock += day + " ";
+
+        if (hh < 10) clock += "0";
+
+        clock += hh + ":";
+        if (mm < 10) clock += "0";
+        clock += mm + ":";
+        if (ss < 10) clock += "0";
+        clock += ss;
+        return clock;
+      }
+      function _getHistories() {
+        var histories = window.localStorage.getItem("history");
+        var arrs = new Array(10);
+        if (histories) {
+          arrs = JSON.parse(histories);
+        }
+        return arrs;
+      }
+      function updateCurTime(value) {
+        var arrs = _getHistories();
+        arrs.pop();
+        arrs.unshift(CurrentTime() + '，操作：' + value + '，更新为：' + window.localStorage.getItem('count'));
+        console.log(JSON.stringify(arrs));
+        window.localStorage.setItem("history", JSON.stringify(arrs));
+      }
+      function init() {
+        var histories = _getHistories();
+        var child = document.getElementById("times");
+        if (child) {
+          var father = document.getElementById("history");
+          father.removeChild(child);
+        }
+        var ol = document.createElement("ol");
+        ol.id = "times";
+        document.getElementById("history").appendChild(ol);
+        for (var i = 0; i < histories.length; i++) {
+          var list = document.createElement("li");
+          document.getElementById("times").appendChild(list);
+          list.innerHTML = histories[i];
+        }
+      }
+      function updateLi(value) {
+        updateCurTime(value);
+        init();
+      }
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Counter</title>
+    <style>
+      .h1 {
+        text-align: center;
+        font-size: 100px;
+      }
+      .btn {
+        text-align: center;
+      }
+      input[type="button"] {
+        appearance: button;
+        -moz-appearance: button; /* Firefox */
+        -webkit-appearance: button; /* Safari 和 Chrome */
+        box-sizing: border-box;
+        -moz-box-sizing: border-box; /* Firefox */
+        -webkit-box-sizing: border-box; /* Safari */
+        margin: 0 20px;
+        width: 100px;
+        height: 50px;
+        border-radius: 10px;
+        box-shadow: 1px 1px 0;
+        outline: none;
+        font-size: 20px;
+      }
+      input[type="button"]:hover {
+        position: relative;
+        background-color: #dddddd;
+      }
+      input[type="button"]:active {
+        top: 1px;
+        transition: cubic-bezier(0.455, 0.03, 0.515, 0.955);
+      }
+      #history {
+        margin-top: 10px;
+        margin-left: auto;
+        margin-right: auto;
+        width: 50%;
+        height: 300px;
+        border: 1px solid #eee;
+        border-radius: 10px;
+      }
+    </style>
+  </head>
+  <body
+    background="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1556783108003&di=0a2912c89d92ff6073ef26a495203b3f&imgtype=0&src=http%3A%2F%2Fpic.90sjimg.com%2Fback_pic%2Fqk%2Fback_origin_pic%2F00%2F03%2F26%2Feef6239ffa888c925123b141d7fdc7ba.jpg"
+  >
+    <div class="h1">
+      <h1 id="num" class="h1"></h1>
+    </div>
+    <div class="btn">
+      <input type="button" value="减少" id="cut" />
+      <input type="button" value="增加" id="add" />
+      <input type="button" value="清零" id="clear" />
+    </div>
+    <div id="history">
+      <p>历史记录</p>
+      <ol id="times">
+        <li></li>
+      </ol>
+    </div>
+    <script>
+      document.getElementById("num").innerHTML = parseInt(
+        window.localStorage.getItem("count") || 0
+      );
+      var num = document.getElementById("add");
+      add.onclick = function() {
+        var count = parseInt(window.localStorage.getItem("count") || 0) + 1;
+        document.getElementById("num").innerHTML = count;
+        window.localStorage.setItem("count", count);
+        updateLi('+1');
+      };
+      var num2 = document.getElementById("cut");
+      cut.onclick = function() {
+        var count = parseInt(window.localStorage.getItem("count") || 0) - 1;
+        document.getElementById("num").innerHTML = count;
+        window.localStorage.setItem("count", count);
+        updateLi('-1');
+      };
+      var cl = document.getElementById("clear");
+      cl.onclick = function() {
+        makeSure = confirm("Are you sure to clear all ?");
+        if (makeSure == true) {
+          window.localStorage.setItem("count", 0);
+          document.getElementById("num").innerHTML = 0;
+        } else {
+        }
+        updateLi('清除');
+      };
+      init();
+    </script>
+  </body>
+</html>
